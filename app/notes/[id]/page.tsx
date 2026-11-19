@@ -1,14 +1,23 @@
+import { Suspense } from "react"
 import { notFound } from "next/navigation"
 import { getNoteById } from "../../services/notes"
 import { toggleNoteImportance } from "../../actions/notes"
 
-const NotePage = async ({ params }: { params: Promise<{ id: string }> }) => {
+type Props = { params: Promise<{ id: string }> }
+
+export default function NotePage({ params }: Props) {
+  return (
+    <Suspense fallback={<p>Loading note...</p>}>
+      <NoteContent params={params} />
+    </Suspense>
+  )
+}
+
+async function NoteContent({ params }: Props) {
   const { id } = await params
   const note = getNoteById(Number(id))
 
-  if (!note) {
-    notFound()
-  }
+  if (!note) notFound()
 
   return (
     <div>
@@ -23,5 +32,3 @@ const NotePage = async ({ params }: { params: Promise<{ id: string }> }) => {
     </div>
   )
 }
-
-export default NotePage

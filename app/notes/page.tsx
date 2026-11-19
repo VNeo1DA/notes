@@ -1,11 +1,18 @@
+import { Suspense } from "react"
 import Link from "next/link"
 import { getNotes } from "../services/notes"
 
-const Notes = async ({
-  searchParams,
-}: {
-  searchParams: Promise<{ important?: string }>
-}) => {
+type Props = { searchParams: Promise<{ important?: string }> }
+
+export default function NoteListPage({ searchParams }: Props) {
+  return (
+    <Suspense fallback={<p>Loading notes...</p>}>
+      <NoteList searchParams={searchParams} />
+    </Suspense>
+  )
+}
+
+const NoteList = async ({ searchParams }: Props ) => {
   const { important } = await searchParams
   const showImportant = important === "true"
   const allNotes = getNotes()
@@ -32,5 +39,3 @@ const Notes = async ({
     </div>
   )
 }
-
-export default Notes
